@@ -32,7 +32,8 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	cli := Client{
-		target: cfg.target,
+		target:   cfg.target,
+		dialOpts: cfg.dialOpts,
 	}
 
 	if cfg.errz != nil {

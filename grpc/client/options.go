@@ -22,6 +22,7 @@ type options struct {
 	target         string
 	scInterceptors []grpc.StreamClientInterceptor
 	ucInterceptors []grpc.UnaryClientInterceptor
+	dialOpts       []grpc.DialOption
 }
 
 func (o *options) mustGetCertPool() *x509.CertPool {
@@ -100,6 +101,13 @@ func WithUnaryClientInterceptors(uc ...grpc.UnaryClientInterceptor) Option {
 	}
 }
 
+// WithDialopts adds dial options.
+func WithDialopts(uc ...grpc.DialOption) Option {
+	return func(o *options) {
+		o.dialOpts = append(o.dialOpts, uc...)
+	}
+}
+
 // WithInsecureSkipVerify makes connections not that safe to use.
 func WithInsecureSkipVerify() Option {
 	return func(o *options) {
@@ -107,7 +115,7 @@ func WithInsecureSkipVerify() Option {
 	}
 }
 
-// WithInsecureSkipVerify makes connections not that safe to use.
+// WithDisableTLS turns off tls.
 func WithDisableTLS() Option {
 	return func(o *options) {
 		o.disableTLS = true
