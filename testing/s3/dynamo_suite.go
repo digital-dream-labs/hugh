@@ -1,6 +1,8 @@
 package s3
 
 import (
+	"log"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -36,7 +38,11 @@ func (s *DynamoSuite) SetupSuite() {
 		Credentials: credentials.NewStaticCredentials("ignored", "ignored", ""),
 	}
 
-	s.Dynamo = dynamodb.New(session.New(), s.Config)
+	ses, err := session.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Dynamo = dynamodb.New(ses, s.Config)
 }
 
 func (s *DynamoSuite) ListTableNames() []string {

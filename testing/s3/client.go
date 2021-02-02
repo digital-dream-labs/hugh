@@ -3,6 +3,8 @@ package s3
 import (
 	"io"
 	"os"
+
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 var (
@@ -75,7 +77,11 @@ func (client *Client) CreateContainer(opts DockerCreateContainerOptions) (*Conta
 // InspectContainer is a convience wrapp around Client.InspectContainer() that
 // returns a wrapped Container type.
 func (client *Client) InspectContainer(id string) (*Container, error) {
-	container, err := client.DockerClient.InspectContainer(id)
+	container, err := client.DockerClient.InspectContainerWithOptions(
+		docker.InspectContainerOptions{
+			ID: id,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -89,9 +95,13 @@ func (client *Client) StartNewContainer(containerOpts DockerCreateContainerOptio
 	if err != nil {
 		return nil, err
 	}
-	if err = client.DockerClient.StartContainer(c.DockerContainer.ID, containerOpts.HostConfig); err != nil {
+	if err := client.DockerClient.StartContainer(c.DockerContainer.ID, containerOpts.HostConfig); err != nil {
 		return nil, err
 	}
-	c.DockerContainer, _ = client.DockerClient.InspectContainer(c.DockerContainer.ID)
+	c.DockerContainer, _ = client.DockerClient.InspectContainerWithOptions(
+		docker.InspectContainerOptions{
+			ID: c.DockerContainer.ID,
+		},
+	)
 	return c, nil
 }

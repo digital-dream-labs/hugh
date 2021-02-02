@@ -9,15 +9,15 @@ import (
 
 // test suite to test the helper functions in the S3 test suite base
 // type
-type S3Suite_TestSuite struct {
+type S3SuiteTestSuite struct {
 	S3Suite
 }
 
 func TestS3Suite(t *testing.T) {
-	suite.Run(t, new(S3Suite_TestSuite))
+	suite.Run(t, new(S3SuiteTestSuite))
 }
 
-func (s *S3Suite_TestSuite) TestHelpers() {
+func (s *S3SuiteTestSuite) TestHelpers() {
 	// Create a test bucket
 	s.S3Suite.CreateBucket("test")
 

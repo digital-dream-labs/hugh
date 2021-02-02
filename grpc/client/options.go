@@ -35,7 +35,6 @@ func (o *options) mustGetCertPool() *x509.CertPool {
 		log.Fatal(err)
 	}
 	return certPool
-
 }
 
 func (o *options) errored() bool {

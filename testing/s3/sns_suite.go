@@ -1,6 +1,8 @@
 package s3
 
 import (
+	"log"
+
 	"github.com/aalpern/go-metrics"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -26,7 +28,12 @@ func (s *SNSSuite) SetupSuite() {
 		DisableSSL:  aws.Bool(true),
 		Credentials: credentials.NewStaticCredentials("x", "x", ""),
 	}
-	s.SNS = sns.New(session.New(), s.Config)
+
+	ses, err := session.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.SNS = sns.New(ses, s.Config)
 }
 
 func (s *SNSSuite) CreateTopic(name string) string {
@@ -48,5 +55,4 @@ func (s *SNSSuite) DeleteTopic(arn string) {
 	if err != nil {
 		s.T().Fatalf("Failed to delete SNS topic:: %s", err)
 	}
-	return
 }

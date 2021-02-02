@@ -18,6 +18,10 @@ type Container struct {
 	client *Client
 }
 
+const (
+	darwin = "darwin"
+)
+
 // Stop stops the running container, optionally removing it afterwards.
 func (c *Container) Stop(del bool, killTimeout uint, removeVolumes bool) error {
 	if err := c.client.StopContainer(c.DockerContainer.ID, killTimeout); err != nil {
@@ -36,14 +40,14 @@ func (c *Container) Stop(del bool, killTimeout uint, removeVolumes bool) error {
 	return nil
 }
 
-// IpAddress returns the IP address associated with the container, if
+// IPAddress returns the IP address associated with the container, if
 // any. If we're running under OS X, the returned address will be that
 // of the docker host, as the container's address is not directly
 // accessible.
-func (c *Container) IpAddress() string {
+func (c *Container) IPAddress() string {
 	if c.DockerContainer.NetworkSettings == nil {
 		return ""
-	} else if runtime.GOOS == "darwin" {
+	} else if runtime.GOOS == darwin {
 		dockerhost := os.Getenv("DOCKER_HOST")
 		if dockerhost == "" {
 			return ""
@@ -73,7 +77,7 @@ func (c *Container) Port() string {
 		return ""
 	}
 	for ep := range c.DockerContainer.Config.ExposedPorts {
-		if runtime.GOOS == "darwin" {
+		if runtime.GOOS == darwin {
 			for p := range c.NetworkSettings.Ports {
 				if ep == p {
 					return c.NetworkSettings.Ports[p][0].HostPort
@@ -89,7 +93,7 @@ func (c *Container) Port() string {
 // Addr returns a complete network address with IP address and exposed
 // port for connecting to the primary service exposed by a container.
 func (c *Container) Addr() string {
-	return net.JoinHostPort(c.IpAddress(), c.Port())
+	return net.JoinHostPort(c.IPAddress(), c.Port())
 }
 
 // WaitForContainer waits until the container's primary exposed port

@@ -49,12 +49,12 @@ func Path(rel string) string {
 func LocalhostTLSConfig() *tls.Config {
 	cert, err := tls.LoadX509KeyPair(Path("localhost.crt"), Path("localhost.key"))
 	if err != nil {
-		panic(err)
+		panic("you may need to generate your TLS certs in the internal/tls directory: " + err.Error())
 	}
 
 	ca, err := ioutil.ReadFile(Path("rootCA.crt"))
 	if err != nil {
-		panic(err)
+		panic("you may need to generate your TLS certs in the internal/tls directory: " + err.Error())
 	}
 
 	pool := x509.NewCertPool()

@@ -7,22 +7,22 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type KinesisSuite_TestSuite struct {
+type KinesisSuiteTestSuite struct {
 	KinesisSuite
 }
 
 func TestKinesisSuite(t *testing.T) {
-	suite.Run(t, new(KinesisSuite_TestSuite))
+	suite.Run(t, new(KinesisSuiteTestSuite))
 }
 
-func (s *KinesisSuite_TestSuite) TestHelpers() {
+func (s *KinesisSuiteTestSuite) TestHelpers() {
 	// Create a stream
 	shardID := s.KinesisSuite.CreateStream("test")
 	assert.NotEmpty(s.T(), shardID)
 
 	recsInput := [][]byte{
-		[]byte{1, 2},
-		[]byte{3, 4},
+		{1, 2},
+		{3, 4},
 	}
 	s.KinesisSuite.PutRecords("test", recsInput)
 

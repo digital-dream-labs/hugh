@@ -63,10 +63,10 @@ func (cfg *ContainerConfig) Build() error {
 		return nil
 	}
 	if cfg.Image == "" {
-		return fmt.Errorf("Image name must be specified")
+		return fmt.Errorf("image name must be specified")
 	}
 	if cfg.Init != nil && cfg.Dockerfile != "" {
-		return fmt.Errorf("Custom Init and Dockerfile both specified")
+		return fmt.Errorf("custom init and dockerfile both specified")
 	}
 
 	// make sure we don't race against other test processes when
@@ -93,8 +93,8 @@ func (cfg *ContainerConfig) Build() error {
 		t := time.Now()
 		inputbuf, outputbuf := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 		tr := tar.NewWriter(inputbuf)
-		tr.WriteHeader(&tar.Header{Name: "Dockerfile", Size: int64(len(cfg.Dockerfile)), ModTime: t, AccessTime: t, ChangeTime: t})
-		tr.Write([]byte(cfg.Dockerfile))
+		_ = tr.WriteHeader(&tar.Header{Name: "Dockerfile", Size: int64(len(cfg.Dockerfile)), ModTime: t, AccessTime: t, ChangeTime: t})
+		_, _ = tr.Write([]byte(cfg.Dockerfile))
 		tr.Close()
 		opts := DockerBuildImageOptions{
 			Name:         cfg.Image,
@@ -177,7 +177,7 @@ var Containers = ContainerConfigs{
 func StartContainer(name string, env []string, imageOverride string) (*Container, error) {
 	// Check that the named configuration exists
 	if config, ok := Containers[name]; !ok {
-		return nil, fmt.Errorf("Unknown container name '%s'", name)
+		return nil, fmt.Errorf("unknown container name '%s'", name)
 	} else {
 		return StartContainerWithConfig(config, env, imageOverride)
 	}
@@ -224,7 +224,7 @@ func StartContainerWithConfig(config *ContainerConfig, env []string, imageOverri
 
 	// check if this is a valid port binding
 	if config.HostPortBinding.HostIP != "" || config.HostPortBinding.HostPort != "" {
-		containerOpts.HostConfig.PortBindings = map[DockerPort][]DockerHostPortBinding{DockerPort(config.Port): []DockerHostPortBinding{config.HostPortBinding}}
+		containerOpts.HostConfig.PortBindings = map[DockerPort][]DockerHostPortBinding{DockerPort(config.Port): {config.HostPortBinding}}
 	}
 
 	// Start the container
@@ -311,11 +311,11 @@ func buildMysqlImage(config *ContainerConfig) error {
 	dockerFile := fmt.Sprintf(mysqlDockerFile, config.Image)
 	inputbuf, outputbuf := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 	tr := tar.NewWriter(inputbuf)
-	tr.WriteHeader(&tar.Header{Name: "Dockerfile", Size: int64(len(dockerFile)), ModTime: t, AccessTime: t, ChangeTime: t})
-	tr.Write([]byte(dockerFile))
-	tr.WriteHeader(&tar.Header{Name: "my.cnf", Mode: 0444, Size: int64(len(mysqlCfg)), ModTime: t, AccessTime: t, ChangeTime: t})
-	tr.Write([]byte(mysqlCfg))
-	tr.Close()
+	_ = tr.WriteHeader(&tar.Header{Name: "Dockerfile", Size: int64(len(dockerFile)), ModTime: t, AccessTime: t, ChangeTime: t})
+	_, _ = tr.Write([]byte(dockerFile))
+	_ = tr.WriteHeader(&tar.Header{Name: "my.cnf", Mode: 0444, Size: int64(len(mysqlCfg)), ModTime: t, AccessTime: t, ChangeTime: t})
+	_, _ = tr.Write([]byte(mysqlCfg))
+	_ = tr.Close()
 	opts := DockerBuildImageOptions{
 		Name:         "mysql-utf8mb4",
 		InputStream:  inputbuf,
@@ -333,13 +333,13 @@ type flock struct {
 func Lock(name string) *flock {
 	f := &flock{}
 	f.f, _ = os.Create("/tmp/dockerutil-" + name + ".lock")
-	syscall.Flock(int(f.f.Fd()), syscall.LOCK_EX)
+	_ = syscall.Flock(int(f.f.Fd()), syscall.LOCK_EX)
 	return f
 }
 
 func (f flock) Unlock() {
 	if f.f != nil {
-		syscall.Flock(int(f.f.Fd()), syscall.LOCK_UN)
+		_ = syscall.Flock(int(f.f.Fd()), syscall.LOCK_UN)
 		f.f.Close()
 		f.f = nil
 	}

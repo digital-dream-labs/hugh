@@ -1,6 +1,8 @@
 package s3
 
 import (
+	"log"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -26,7 +28,11 @@ func (s *KinesisSuite) SetupSuite() {
 		DisableSSL:  aws.Bool(true),
 		Credentials: credentials.NewStaticCredentials("x", "x", ""),
 	}
-	s.Kinesis = kinesis.New(session.New(), s.Config)
+	ses, err := session.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Kinesis = kinesis.New(ses, s.Config)
 }
 
 func (s *KinesisSuite) CreateStream(name string) string {

@@ -8,7 +8,7 @@ import (
 func Test(t *testing.T) {
 	ctx := context.Background()
 
-	//Empty tests first
+	// Empty tests first
 	if FromContext(ctx) == nil {
 		t.Log("Logger should never be nil")
 		t.FailNow()
@@ -16,7 +16,7 @@ func Test(t *testing.T) {
 
 	AddContextFields(ctx, Fields{"This does nothing": true})
 
-	//Set logger
+	// Set logger
 	lCtx := AddToContext(ctx)
 
 	if lCtx == ctx {
@@ -31,7 +31,7 @@ func Test(t *testing.T) {
 		t.FailNow()
 	}
 
-	//Set logger again
+	// Set logger again
 	if xCtx := AddToContext(lCtx); xCtx != lCtx {
 		t.Log("Both contexts should be the same since we already set the logger")
 		t.FailNow()

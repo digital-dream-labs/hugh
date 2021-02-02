@@ -1,6 +1,7 @@
 package nosql
 
 import (
+	"errors"
 	"log"
 
 	"github.com/ory/dockertest"
@@ -46,6 +47,8 @@ func NewServer(c *Config) (*Server, error) {
 			return nil, err
 		}
 		// todo:  add more
+	default:
+		return nil, errors.New("invaild type")
 	}
 
 	return &s, nil

@@ -62,12 +62,12 @@ func (s *Suite) TearDownSuite() {
 		switch terminateAction {
 		case "PURGE":
 			fmt.Println("Stopping & Deleting Container " + s.Container.DockerContainer.ID)
-			s.Container.Stop(true, DefaultContainerTimeout, true)
+			_ = s.Container.Stop(true, DefaultContainerTimeout, true)
 		case "STOP":
 			fmt.Println("Stopping Container " + s.Container.DockerContainer.ID)
-			s.Container.Stop(false, DefaultContainerTimeout, true)
+			_ = s.Container.Stop(false, DefaultContainerTimeout, true)
 		default:
-			fmt.Printf("Leaving container %s intact at IP address %s\n", s.Container.DockerContainer.ID, s.Container.IpAddress())
+			fmt.Printf("Leaving container %s intact at IP address %s\n", s.Container.DockerContainer.ID, s.Container.IPAddress())
 		}
 	}
 }

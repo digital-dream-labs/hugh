@@ -7,7 +7,6 @@ import (
 )
 
 func TestServer_runPostgres(t *testing.T) {
-
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		t.Fatalf("Could not connect to docker: %s", err)

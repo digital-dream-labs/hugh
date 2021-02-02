@@ -247,9 +247,7 @@ func errorCheck(code int) error {
 }
 
 func setHeaders(headers map[string]string, req *http.Request) {
-	if headers != nil {
-		for k, v := range headers {
-			req.Header.Set(k, v)
-		}
+	for k, v := range headers {
+		req.Header.Set(k, v)
 	}
 }

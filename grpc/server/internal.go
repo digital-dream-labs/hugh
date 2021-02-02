@@ -57,6 +57,7 @@ func (s *Server) appendErr(err error) {
 }
 
 func serverTLS(o *options) *tls.Config {
+	//nolint -- This is in place to interact with the older services until they're upgraded...
 	return &tls.Config{
 		//MinVersion:   tls.VersionTLS13,
 		ClientCAs:    o.mustGetCertPool(),
@@ -65,7 +66,7 @@ func serverTLS(o *options) *tls.Config {
 	}
 }
 
-func grpcHandlerFunc(grpcServer http.Handler, otherHandler http.Handler) http.Handler {
+func grpcHandlerFunc(grpcServer, otherHandler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.ProtoMajor == 2 && strings.HasPrefix(r.Header.Get("Content-Type"), "application/grpc") {
 			grpcServer.ServeHTTP(w, r)
@@ -84,21 +85,6 @@ func grpcHandlerFunc(grpcServer http.Handler, otherHandler http.Handler) http.Ha
 		}
 	})
 }
-
-/*
-func (s *Server) getListener(port int) (net.Listener, error) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-	if err != nil {
-		return nil, err
-	}
-
-	lis = &internalListener{
-		Listener:        lis,
-		firstAcceptFunc: func() { s.changeState(Ready) },
-	}
-	return lis, nil
-}
-*/
 
 func (s *Server) getListener(port int, certs []tls.Certificate) (net.Listener, error) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))

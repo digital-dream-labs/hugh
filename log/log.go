@@ -10,8 +10,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// MachineQ - added WithField, WithFields and SetTimestampFormat
 
 package log
 
@@ -29,6 +27,10 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
+)
+
+const (
+	redacted = "redacted"
 )
 
 // setSyslogFormatter is nil if the target architecture does not support syslog.
@@ -150,12 +152,11 @@ func (l logger) WithMetadata(ns interface{}, args ...interface{}) Logger {
 		}
 	}
 
-	for _, in := range args {
+	for in := range args {
 		var fields Fields
-		inrec, err := json.Marshal(&in)
+		inrec, err := json.Marshal(&args[in])
 		if err == nil {
 			uerr := json.Unmarshal(inrec, &fields)
-			//check dup keys??
 			if uerr == nil {
 				for k, v := range fields {
 					allFields[k] = v
@@ -165,23 +166,21 @@ func (l logger) WithMetadata(ns interface{}, args ...interface{}) Logger {
 	}
 	for _, bval := range blacklist {
 		if _, ok := allFields[bval]; ok {
-			allFields[bval] = "[redacted]"
+			allFields[bval] = redacted
 		}
 	}
 
 	return logger{l.entry.WithFields(logrus.Fields(allFields))}
-
 }
 
 func (l logger) WithStructs(args ...interface{}) Logger {
 	allFields := make(Fields)
 
-	for _, in := range args {
+	for in := range args {
 		var fields Fields
-		inrec, err := json.Marshal(&in)
+		inrec, err := json.Marshal(&args[in])
 		if err == nil {
 			uerr := json.Unmarshal(inrec, &fields)
-			//check dup keys
 			if uerr == nil {
 				for k, v := range fields {
 					allFields[k] = v
@@ -191,7 +190,7 @@ func (l logger) WithStructs(args ...interface{}) Logger {
 	}
 	for _, bval := range blacklist {
 		if _, ok := allFields[bval]; ok {
-			allFields[bval] = "[redacted]"
+			allFields[bval] = redacted
 		}
 	}
 

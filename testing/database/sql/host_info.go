@@ -25,5 +25,4 @@ func getHostInfo(resource *dockertest.Resource, service docker.Port) (res, port 
 	default:
 		return resource.Container.NetworkSettings.IPAddress, service.Port()
 	}
-
 }

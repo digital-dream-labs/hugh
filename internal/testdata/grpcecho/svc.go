@@ -1,4 +1,4 @@
-package echopb
+package grpcecho
 
 import (
 	context "golang.org/x/net/context"

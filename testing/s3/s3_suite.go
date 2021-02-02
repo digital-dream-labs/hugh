@@ -55,7 +55,8 @@ func (s *S3Suite) SetupSuite() {
 		Credentials:      credentials.NewStaticCredentials(s.AccessKey, s.SecretKey, ""),
 	}
 
-	s.S3 = s3.New(session.New(), s.Config)
+	ses, _ := session.NewSession()
+	s.S3 = s3.New(ses, s.Config)
 }
 
 func (s *S3Suite) CreateBucket(name string) {

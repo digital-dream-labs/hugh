@@ -114,6 +114,7 @@ func (c *Client) Conn() *grpc.ClientConn {
 }
 
 func clientTLS(o *options) *tls.Config {
+	//nolint -- once older services are upgraded, fix this!
 	return &tls.Config{
 		RootCAs:      o.mustGetCertPool(),
 		Certificates: o.certificates,
@@ -122,12 +123,14 @@ func clientTLS(o *options) *tls.Config {
 
 func insecureClientTLS(o *options) *tls.Config {
 	return &tls.Config{
+		//nolint -- this is intentional when calling this!
 		InsecureSkipVerify: true,
 	}
 }
 
 func insecureClientTLSWithClientCerts(o *options) *tls.Config {
 	return &tls.Config{
+		//nolint -- this is intentional when calling this!
 		InsecureSkipVerify: true,
 		Certificates:       o.certificates,
 	}

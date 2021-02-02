@@ -8,15 +8,15 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type SNSSuite_TestSuite struct {
+type SNSSuiteTestSuite struct {
 	SNSSuite
 }
 
 func TestSNSSuite(t *testing.T) {
-	suite.Run(t, new(SNSSuite_TestSuite))
+	suite.Run(t, new(SNSSuiteTestSuite))
 }
 
-func (s *SNSSuite_TestSuite) TestHelpers() {
+func (s *SNSSuiteTestSuite) TestHelpers() {
 	fmt.Printf("+++++++++++ sns +++++++++++ \n")
 	url := s.SNSSuite.CreateTopic("test")
 	assert.NotEmpty(s.T(), url)

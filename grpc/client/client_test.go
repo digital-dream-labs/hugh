@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/digital-dream-labs/hugh/grpc/server"
-	"github.com/digital-dream-labs/hugh/internal/testdata/grpc"
+	"github.com/digital-dream-labs/hugh/internal/testdata/grpcecho"
 	"github.com/digital-dream-labs/hugh/internal/testdata/tls"
-	"google.golang.org/grpc/examples/features/proto/echo"
 )
 
 func TestNewClient(t *testing.T) {
@@ -56,19 +55,19 @@ func TestNewClient(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			c := echo.NewEchoClient(cli.Conn())
+			c := grpcecho.NewEchoServiceClient(cli.Conn())
 
 			ctx := context.Background()
 
-			resp, err := c.UnaryEcho(
+			resp, err := c.Echo(
 				ctx,
-				&echo.EchoRequest{Message: "test"},
+				&grpcecho.EchoMessage{Value: "test"},
 			)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			if resp.Message != "test" {
+			if resp.Value != "test" {
 				t.Fatalf("message does not match")
 			}
 
@@ -85,9 +84,9 @@ func startTestServer(opts []server.Option) (string, error) {
 		return "", err
 	}
 
-	echosrv := grpc.New()
+	echosrv := grpcecho.Echo{}
 
-	echo.RegisterEchoServer(
+	grpcecho.RegisterEchoServiceServer(
 		srv.Transport(),
 		echosrv,
 	)

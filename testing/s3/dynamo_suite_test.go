@@ -8,7 +8,7 @@ import (
 
 // test suite to test the helper functions in the Dynamo test suite base
 // type
-type DynamoSuite_TestSuite struct {
+type DynamoSuiteTestSuite struct {
 	DynamoSuite
 }
 
@@ -16,5 +16,5 @@ type DynamoSuite_TestSuite struct {
 // correctly. When helper functions are added to the suite they will
 // be tested here.
 func TestDynamoSuite(t *testing.T) {
-	suite.Run(t, new(DynamoSuite_TestSuite))
+	suite.Run(t, new(DynamoSuiteTestSuite))
 }

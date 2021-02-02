@@ -1,6 +1,8 @@
 package s3
 
 import (
+	"log"
+
 	"github.com/aalpern/go-metrics"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -27,8 +29,11 @@ func (s *SQSSuite) SetupSuite() {
 		DisableSSL:  aws.Bool(true),
 		Credentials: credentials.NewStaticCredentials("x", "x", ""),
 	}
-	s.SQS = sqs.New(session.New(), s.Config)
-
+	ses, err := session.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.SQS = sqs.New(ses, s.Config)
 }
 
 func (s *SQSSuite) CreateQueue(name string) string {

@@ -46,7 +46,6 @@ func New(o ...Option) (*mongo.Database, error) {
 
 	if cfg.authdbname != "" {
 		uri += fmt.Sprintf("/%s", cfg.authdbname)
-
 	}
 
 	switch {

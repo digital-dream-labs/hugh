@@ -100,7 +100,6 @@ func New(opts ...Option) (*Server, error) {
 	srv.shutdown = srv.transport.GracefulStop
 
 	if cfg.httpPassthrough || cfg.httpPassthroughInsecure {
-
 		srv.httpMux = grpc_runtime.NewServeMux(
 			grpc_runtime.WithMarshalerOption(
 				grpc_runtime.MIMEWildcard,
@@ -123,10 +122,12 @@ func New(opts ...Option) (*Server, error) {
 
 		if cfg.certificates != nil {
 			srv.httpConfig = &tls.Config{
-				Certificates:       cfg.certificates,
-				NextProtos:         []string{"h2"},
-				ClientCAs:          cfg.mustGetCertPool(),
-				ClientAuth:         cfg.clientAuth,
+				Certificates: cfg.certificates,
+				NextProtos:   []string{"h2"},
+				ClientCAs:    cfg.mustGetCertPool(),
+				ClientAuth:   cfg.clientAuth,
+				//nolint -- the only way to make this proper is to have a SAN in the cert, which may expose
+				// some of the internals.  I could go either way on this one..
 				InsecureSkipVerify: true,
 			}
 		}

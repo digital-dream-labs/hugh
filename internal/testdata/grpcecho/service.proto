@@ -1,11 +1,7 @@
 syntax = "proto3";
-package echopb;
+package grpcecho;
 
 import "google/api/annotations.proto";
-
-message EchoMessage {
- string value = 1;
-}
 
 service EchoService {
   rpc Echo(EchoMessage) returns (EchoMessage) {
@@ -14,4 +10,8 @@ service EchoService {
       body: "*"
     };
   }
+}
+
+message EchoMessage {
+ string value = 1;
 }
