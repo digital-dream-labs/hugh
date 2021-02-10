@@ -15,7 +15,6 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
-	github.com/grpc-ecosystem/grpc-gateway v1.9.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0-beta.5
 	github.com/lib/pq v1.7.0
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
@@ -40,7 +39,6 @@ require (
 	golang.org/x/sys v0.0.0-20200803210538-64077c9b5642
 	google.golang.org/genproto v0.0.0-20200923140941-5646d36feee1
 	google.golang.org/grpc v1.32.0
-	google.golang.org/grpc/examples v0.0.0-20201005153634-dad518ae5e80
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect

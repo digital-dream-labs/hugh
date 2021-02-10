@@ -39,16 +39,6 @@ var setSyslogFormatter func(logger, string, string) error
 // setEventlogFormatter is nil if the target OS does not support Eventlog (i.e., is not Windows).
 var setEventlogFormatter func(logger, string, bool) error
 
-var blacklist = []string{
-	"CurrentPassword",
-	"NewPassword",
-	"Password",
-	"Token",
-	"Secret",
-	"EnvironmentKey",
-	"SubscriberToken",
-}
-
 // Fields type, used to pass to `WithFields`.
 type Fields map[string]interface{}
 
@@ -110,7 +100,7 @@ type Logger interface {
 	WithField(key string, value interface{}) Logger
 	WithFields(fields Fields) Logger
 	WithStructs(args ...interface{}) Logger
-	WithMetadata(ns interface{}, args ...interface{}) Logger
+	WithMetadata(args ...interface{}) Logger
 
 	SetFormat(string) error
 	SetLevel(string) error
@@ -132,25 +122,8 @@ func (l logger) WithFields(fields Fields) Logger {
 	return logger{l.entry.WithFields(logrus.Fields(fields))}
 }
 
-func (l logger) WithMetadata(ns interface{}, args ...interface{}) Logger {
+func (l logger) WithMetadata(args ...interface{}) Logger {
 	allFields := make(Fields)
-
-	if ns != nil {
-		var fields Fields
-
-		inrec, err := json.Marshal(&ns)
-		if err == nil {
-			uerr := json.Unmarshal(inrec, &fields)
-			if uerr == nil {
-				if allFields["subscriberID"] != nil {
-					allFields["subscriberID"] = fields["subscriberID"]
-				}
-				if allFields["userID"] != nil {
-					allFields["userID"] = fields["UserID"]
-				}
-			}
-		}
-	}
 
 	for in := range args {
 		var fields Fields
@@ -162,11 +135,6 @@ func (l logger) WithMetadata(ns interface{}, args ...interface{}) Logger {
 					allFields[k] = v
 				}
 			}
-		}
-	}
-	for _, bval := range blacklist {
-		if _, ok := allFields[bval]; ok {
-			allFields[bval] = redacted
 		}
 	}
 
@@ -186,11 +154,6 @@ func (l logger) WithStructs(args ...interface{}) Logger {
 					allFields[k] = v
 				}
 			}
-		}
-	}
-	for _, bval := range blacklist {
-		if _, ok := allFields[bval]; ok {
-			allFields[bval] = redacted
 		}
 	}
 
@@ -384,8 +347,8 @@ func WithStructs(args ...interface{}) Logger {
 }
 
 // WithMetadata adds all fields of structs to a Logger.
-func WithMetadata(ns interface{}, args ...interface{}) Logger {
-	return baseLogger.WithMetadata(ns, args...)
+func WithMetadata(args ...interface{}) Logger {
+	return baseLogger.WithMetadata(args...)
 }
 
 // Debug logs a message at level Debug on the standard logger.
