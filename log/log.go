@@ -301,7 +301,7 @@ func (l logger) sourced() *logrus.Entry {
 	funidx := strings.LastIndex(frame.Function, "/")
 	fun := frame.Function[funidx+1:]
 
-	return l.entry.WithFields(logrus.Fields{"Source": fmt.Sprintf("%s:%d", file, frame.Line), "Function": fun})
+	return l.entry.WithFields(logrus.Fields{"source": fmt.Sprintf("%s:%d", file, frame.Line), "function": fun})
 }
 
 var origLogger = logrus.New()
