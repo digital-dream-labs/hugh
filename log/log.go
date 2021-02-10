@@ -29,10 +29,6 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-const (
-	redacted = "redacted"
-)
-
 // setSyslogFormatter is nil if the target architecture does not support syslog.
 var setSyslogFormatter func(logger, string, string) error
 
